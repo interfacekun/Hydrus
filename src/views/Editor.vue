@@ -26,21 +26,23 @@
         </ButtonGroup>
       </Row>
     </div>
-    <input type="file" id="hydrusfile" style="display: none" @change="loadLocalFile">
-        <Modal :title="dialogs.elementModel.title" v-model="dialogs.elementModel.visible" :closable="false" width="60%">
-            <EditElement :model="dialogs.elementModel" ref="editElement"></EditElement>
-            <div slot="footer" class="dialog-footer">
-                <Button @click="dialogs.elementModel.visible = false">Cancel</Button>
-                <Button type="primary" @click="handleElementModel">Ok</Button>
-            </div>
-        </Modal>
-        <Modal :title="dialogs.entityModel.title" v-model="dialogs.entityModel.visible" :closable="false" width="60%">
-            <EditEntity :model="dialogs.entityModel" ref="editEntity"></EditEntity>
-            <div slot="footer">
-                <Button @click="dialogs.entityModel.visible = false">Cancel</Button>
-                <Button type="primary" @click="handleEntityModel">Ok</Button>
-            </div>
-        </Modal>
+    
+    <input type="file" id="hydrusfile" ref="hydrusfile" style="display: none" @change="loadLocalFile">
+
+    <Modal :title="dialogs.elementModel.title" v-model="dialogs.elementModel.visible" :closable="false" width="60%">
+        <EditElement :model="dialogs.elementModel" ref="editElement"></EditElement>
+        <div slot="footer" class="dialog-footer">
+            <Button @click="dialogs.elementModel.visible = false">Cancel</Button>
+            <Button type="primary" @click="handleElementModel">Ok</Button>
+        </div>
+    </Modal>
+    <Modal :title="dialogs.entityModel.title" v-model="dialogs.entityModel.visible" :closable="false" width="60%">
+        <EditEntity :model="dialogs.entityModel" ref="editEntity"></EditEntity>
+        <div slot="footer">
+            <Button @click="dialogs.entityModel.visible = false">Cancel</Button>
+            <Button type="primary" @click="handleEntityModel">Ok</Button>
+        </div>
+    </Modal>
 
   </div>
 </template>
@@ -54,7 +56,7 @@
 #scene {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: black;
 }
 
 .menu {
@@ -353,7 +355,7 @@
             })
            return
         }
-        let reader = new FileReader()   
+        let reader = new FileReader()
 
         reader.onload = () => {
           let json = JSON.parse(reader.result)
@@ -363,15 +365,22 @@
         reader.readAsText(selectedFile)
       },
       load(){
-        this.$el.querySelector('#hydrusfile').click()
+        // this.$el.querySelector('#hydrusfile').click()
+        this.$refs.hydrusfile.dispatchEvent(new MouseEvent('click'))
+        // console.log("hydrusfile", this.$refs.hydrusfile);
       },
       save(){
         this.scene.cache = this.scene.stage.saveToJson()
         this.$store.commit('updateInternalCache', this.scene.cache)
         // 保存到本地文件
-        let filename = this.scene.cache.root.config.label.title
-        let blob = new Blob([JSON.stringify(this.scene.cache)], {type: "text/plain;charset=utf-8"})
-        FileSaver.saveAs(blob, filename + '-' + Aquila.Utils.common.currentDateString(true) + ".json")
+        if (this.scene.cache.root) {
+          let filename = this.scene.cache.root.config.label.title
+          let blob = new Blob([JSON.stringify(this.scene.cache)], {type: "text/plain;charset=utf-8"})
+          FileSaver.saveAs(blob, filename + '-' + Aquila.Utils.common.currentDateString(true) + ".json")
+        } else {
+          console.error("没有文件需要保存");
+        }
+        
       },
       loadCache(){
         LocalForage.getItem(this.scene.cachekey, (err, value) => {
