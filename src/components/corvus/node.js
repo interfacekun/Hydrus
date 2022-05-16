@@ -21,10 +21,10 @@ class BTNode {
 
     if (!this.config.uid) {
       // this.config.uid = uniqid() // 自动生成,
-      this.config.uid = autoUid++; // 自动生成,
+      this.config.uid = window["autoUid"]++; // 自动生成,
     } else {
-      if (this.config.uid >= autoUid) {
-        autoUid = this.config.uid;
+      if (this.config.uid >= window["autoUid"]) {
+        window["autoUid"] = this.config.uid;
       }
     }
  

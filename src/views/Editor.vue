@@ -407,7 +407,6 @@
         }
       },
 
-
       convert (json) {
         let tree = {}
         const walk = (node) => {
@@ -446,7 +445,6 @@
         tree.root = walk(json.root)
         return tree;
       },
-
 
       loadCache(){
         LocalForage.getItem(this.scene.cachekey, (err, value) => {
@@ -491,22 +489,27 @@
         this.scene.stage.zoomOut()
       },
       reset(){
+        
         this.scene.stage.reset()
       },
       undo(){
+        window["autoUid"]--;
         this.scene.stage.undo()
       },
       redo(){
         this.scene.stage.redo()
       },
       clear(){
+       
          this.$Modal.confirm({
            content: 'Are you sure?',
            title: 'Tip', 
            okText: 'Ok',
            cancelText: 'Cancel',
-           onOk: () => {this.scene.stage.clear()}
-         })
+           onOk: () => {
+              window["autoUid"] = 2;
+              this.scene.stage.clear()
+          }})
       },
       test(){
         // Demo Tree JSON

@@ -23,6 +23,8 @@ Vue.use(VueResource)
 Vue.use(VueIntro)
 Vue.use(VueCodemirror)
 
+window["autoUid"] = 0;
+
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识
   messages

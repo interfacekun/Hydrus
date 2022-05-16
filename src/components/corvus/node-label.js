@@ -82,12 +82,37 @@ class BTLabelNode extends BTNode {
 
     let offsetY = Utils.label.space + Utils.label.iconSize
     if (this.config.subtitles.length === 0) {
-      this.config.subtitles.push(this.config.type)
+      let name = this.config.type;
+      this.config.subtitles.push(name)
     }
-    
+
     this.subtitles = []
     for (let sub of this.config.subtitles) {
       console.log("subtitles", sub);
+      if (sub == "selector") {
+        sub = "选择";
+      }
+
+      if (sub == "parallel") {
+        sub = "并行";
+      }
+
+      if (sub == "sequence") {
+        sub = "序列";
+      }
+
+      if (sub == "decorator" || sub == "condition") {
+        sub = "条件";
+      }
+
+      if (sub == "task") {
+        sub = "任务";
+      }
+
+      if (sub == "service") {
+        sub = "服务";
+      }
+
       let subtitle = this.createSubtitle({
         x: 6,
         y: offsetY,
