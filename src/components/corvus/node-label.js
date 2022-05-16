@@ -73,7 +73,7 @@ class BTLabelNode extends BTNode {
     this.title = new Konva.Text({
       x: 32,
       y: 8,
-      text: this.config.title,
+      text: `${this.config.uid}.${this.config.title}`,
       fontSize: Utils.label.fontSize,
       fill: '#fff',
       draggable: false
@@ -228,7 +228,7 @@ class BTLabelNode extends BTNode {
       return
     }
     this.config.title = title
-    this.title.text(title)
+    this.title.text(`${this.config.uid}.${title}`)
     this.adjust()
   }
 

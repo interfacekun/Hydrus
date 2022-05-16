@@ -2,7 +2,7 @@ import Aquila from 'orion-aquila'
 import Konva from 'konva'
 import uniqid from 'uniqid'
 import Utils from './node-utils'
-
+let autoUid = 0;
 class BTNode {
   constructor (config) {
     this.config = Aquila.Utils.lodash.merge({
@@ -18,8 +18,16 @@ class BTNode {
       canOrder: true,
       canMove: false
     }, config)
+
+    if (!this.config.uid) {
+      // this.config.uid = uniqid() // 自动生成,
+      this.config.uid = autoUid++; // 自动生成,
+    } else {
+      if (this.config.uid >= autoUid) {
+        autoUid = this.config.uid;
+      }
+    }
  
-    this.config.uid = uniqid() // 自动生成,
     this.config.names[this.config.type] = true
     this.isSelected = false
     this.root = new Konva.Group({

@@ -8,3 +8,4 @@ client/dist/
 dist/backend/
 dist/frontend/
 .history
+dist

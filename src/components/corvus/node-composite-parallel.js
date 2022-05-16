@@ -9,7 +9,7 @@ class BTParallelNode extends BTCompositeNode {
         icon: 'parallel',
         title: 'Parallel',
         fill: '#EE2C2C',
-        subtitles: ['parallel']
+        subtitles: ['并行']
       }
     }, config))
   }

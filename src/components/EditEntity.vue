@@ -15,6 +15,30 @@
                  <FormItem label="Script" prop="script" v-if="model.form.type === 'task'">
                     <Input v-model="model.form.script" placeholder="Enter script function"></Input>
                 </FormItem>
+
+                <FormItem label="Parameters">
+                    <Tag
+                      :key="tag"
+                      color="warning"
+                      v-for="(tag, i) in model.form.parameters"
+                      :closable=" i > 0 "
+                      @close="handleParametersClose(tag)">
+                      {{tag}}
+                    </Tag>
+                    <Input
+                      class="input-new-tag"
+                      v-if="inputVisible"
+                      v-model="inputValue"
+                      ref="saveParametersInput"
+                      size="small"
+                      @keyup.enter.native="handleParametersInputConfirm"
+                      @on-blur="handleParametersInputConfirm"
+                    >
+                    </Input>
+                     <Button v-else  icon="ios-add" size="small" @click="showParametersInput">
+                    </Button>
+                </FormItem>
+
                 <FormItem label="Subtitiles">
                     <Tag
                             :key="tag"
@@ -92,12 +116,14 @@
       handleTagClose(tag) {
         this.model.form.subtitles.splice(this.model.form.subtitles.indexOf(tag), 1);
       },
+
       showTagInput() {
         this.inputVisible = true
         this.$nextTick(_ => {
           this.$refs['saveTagInput'].$refs.input.focus()
         });
       },
+
       handleTagInputConfirm() {
         let inputValue = this.inputValue
         if (inputValue) {
@@ -106,6 +132,27 @@
         this.inputVisible = false
         this.inputValue = ''
       },
+
+      handleParametersClose(tag) {
+        this.model.form.parameters.splice(this.model.form.parameters.indexOf(tag), 1);
+      },
+
+      showParametersInput() {
+        this.inputVisible = true
+        this.$nextTick(_ => {
+          this.$refs['saveParametersInput'].$refs.input.focus()
+        });
+      },
+
+      handleParametersInputConfirm() {
+        let inputValue = this.inputValue
+        if (inputValue) {
+          this.model.form.parameters.push(inputValue)
+        }
+        this.inputVisible = false
+        this.inputValue = ''
+      },
+
       validate(cb) {
           this.$refs['form'].validate((valid) => {
              cb && cb(valid)

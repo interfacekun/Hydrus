@@ -649,10 +649,11 @@ class BTStage {
    */
   saveToJson () {
     let json = {}
-    let top = this.root.children[0]
+    let top = this.root.children[0];  
     if (top) {
       json.root = top.toJson()
     }
+    
     return Aquila.Utils.common.clone(json)
   }
  

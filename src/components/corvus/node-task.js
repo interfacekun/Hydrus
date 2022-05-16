@@ -13,7 +13,7 @@ class BTTaskNode extends BTEntityNode {
         icon: 'task',
         title: 'Task',
         fill: '#6A5ACD',
-        subtitles: ['task']
+        subtitles: ['任务/动作']
       }
     }, config))
   }

@@ -93,7 +93,8 @@
         },
         scene: {
           stage: null,
-          cachekey: 'hydruscache'
+          cachekey: 'hydruscache',
+          editables: ['task', 'decorator', 'service']
         },
         nodeTypes: {
           selector: 'Selector',
@@ -115,7 +116,8 @@
               script: '',
               subtitles: [],
               type: '',
-              invert: false
+              invert: false,
+              parameters: []
             }
           },
           entityModel: {
@@ -128,7 +130,8 @@
               title: '',
               script: '',
               subtitles: [],
-              type: ''
+              type: '',
+              parameters: []
             }
           }
         }
@@ -157,12 +160,14 @@
           model.form.subtitles = [].concat(node.getSubtitles())
           model.form.title = node.getTitle()
           model.form.script = node.getScript()
+          model.form.parameters = [].concat(node.getScriptParameters())
           model.form.invert = node.getInvert()
         } else if (node.isType('entity')) {
           model = this.dialogs.entityModel
           model.form.subtitles = [].concat(node.label().getSubtitles())
           model.form.title = node.label().getTitle()
           model.form.script = node.label().getScript()
+          model.form.parameters = [].concat(node.label().getScriptParameters())
         } else {
           this.$Message.error({
             content: 'Unknown node - ' + command
@@ -312,7 +317,8 @@
                     label: {
                       title: model.form.title,
                       subtitles: model.form.subtitles,
-                      script: model.form.script
+                      script: model.form.script,
+                      parameters: model.form.parameters
                     }
                   }
                 }
@@ -331,7 +337,7 @@
              if (valid) {
               // 修改节点属性
               model.host.label().setTitle(model.form.title)
-              model.host.label().setScript(model.form.script)
+              model.host.label().setScript(model.form.script, model.form.parameters)
               model.host.label().setSubtitles(model.form.subtitles)
               model.host.adjust()
               this.scene.stage.refresh()
@@ -371,17 +377,77 @@
       },
       save(){
         this.scene.cache = this.scene.stage.saveToJson()
-        this.$store.commit('updateInternalCache', this.scene.cache)
+        this.$store.commit('updateInternalCache', this.scene.cache);
+        let time;
         // 保存到本地文件
         if (this.scene.cache.root) {
           let filename = this.scene.cache.root.config.label.title
-          let blob = new Blob([JSON.stringify(this.scene.cache)], {type: "text/plain;charset=utf-8"})
-          FileSaver.saveAs(blob, filename + '-' + Aquila.Utils.common.currentDateString(true) + ".json")
+          let blob = new Blob([JSON.stringify(this.scene.cache)], {type: "text/plain;charset=utf-8"});
+          time = Aquila.Utils.common.currentDateString(true);
+          FileSaver.saveAs(blob, filename + '-' + time + ".json")
         } else {
           console.error("没有文件需要保存");
+          this.$Message.error({
+              content: '没有文件需要保存',
+              duration: 2
+          });
         }
-        
+        let json = this.$store.getters.internalCache;
+        if (json) {
+          json = this.convert(json);
+          let filename = `${this.scene.cache.root.config.label.title}-bttree-${time}.json`;
+          let blob = new Blob([JSON.stringify(json)], {type: "text/plain;charset=utf-8"});
+          FileSaver.saveAs(blob, filename);
+        } else {
+            console.error("缓存没有保存");
+             this.$Message.error({
+              content: '缓存没有保存',
+              duration: 2
+          });
+        }
       },
+
+
+      convert (json) {
+        let tree = {}
+        const walk = (node) => {
+          let n = {
+            type: node.type,
+          }
+          let idx = this.scene.editables.indexOf(n.type)
+          n.label = idx > 0 ? node.config.title : node.config.label.title
+
+          if (idx >= 0) {
+            n.actor = {
+              id: n.type === 'task' ? node.config.label.script : node.config.script
+            }
+            let params = (n.type === 'task') ? node.config.label.parameters : node.config.parameters
+            if (params) {
+              n.actor.params = [].concat(params)
+            }
+          }
+
+          // 处理孩子节点
+          n.elements = []
+          if (node.elements) {
+            for (let elem of node.elements) {
+              n.elements.push(walk(elem))
+            }
+          }
+
+          n.children = []
+           if (node.children) {
+            for (let child of node.children) {
+              n.children.push(walk(child))
+            }
+          }
+          return n
+        }
+        tree.root = walk(json.root)
+        return tree;
+      },
+
+
       loadCache(){
         LocalForage.getItem(this.scene.cachekey, (err, value) => {
           if (err) {
