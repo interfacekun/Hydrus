@@ -15,7 +15,7 @@ const Utils = {
   zone: {
     height: 12,
     padding: 10,
-    fill: '#191970',
+    fill: '#646273',
     highlight: '#FFC125'
   },
   label: {

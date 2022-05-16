@@ -7,7 +7,7 @@ import Utils from './node-utils'
 class BTDecoratorNode extends BTLabelNode {
   constructor (config) {
     super(Aquila.Utils.lodash.merge({
-      fill: '#0000EE',
+      fill: '#ff6a14',
       type: 'decorator',
       names: {
         accessory: true
