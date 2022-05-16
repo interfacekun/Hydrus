@@ -9,7 +9,7 @@ class BTSequenceNode extends BTCompositeNode {
         icon: 'sequence',
         title: 'Sequence',
         fill: '#A0522D',
-        subtitles: ['sequence']
+        subtitles: ['序列']
       }
     }, config))
   }

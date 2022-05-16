@@ -16,7 +16,7 @@ class BTRootNode extends BTEntityNode {
       label: {
         icon: 'root',
         title: 'Root',
-        subtitles: ['root'],
+        subtitles: ['根'],
         order: -2
       }
     }, config))

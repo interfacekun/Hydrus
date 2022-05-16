@@ -84,9 +84,10 @@ class BTLabelNode extends BTNode {
     if (this.config.subtitles.length === 0) {
       this.config.subtitles.push(this.config.type)
     }
-
+    
     this.subtitles = []
     for (let sub of this.config.subtitles) {
+      console.log("subtitles", sub);
       let subtitle = this.createSubtitle({
         x: 6,
         y: offsetY,
@@ -294,6 +295,7 @@ class BTLabelNode extends BTNode {
   }
 
   setSubtitles (subtitles) {
+    console.log("setSubtitles", subtitles);
     this.config.subtitles = [].concat(subtitles)
     // 调整内容
     let offsetY = Utils.label.space + Utils.label.iconSize

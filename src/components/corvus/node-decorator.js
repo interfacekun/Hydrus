@@ -16,7 +16,7 @@ class BTDecoratorNode extends BTLabelNode {
       canMove: true,
       canDrop: true,
       icon: 'decorator',
-      subtitles: ['condition'],
+      subtitles: ['条件'],
       acceptTypes: ['decorator']
     }, config))
   }

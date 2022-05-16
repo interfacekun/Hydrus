@@ -9,7 +9,7 @@ class BTSelectorNode extends BTCompositeNode {
         icon: 'selector',
         title: 'Selector',
         fill: '#2E8B57',
-        subtitles: ['selector']
+        subtitles: ['选择']
       }
     }, config))
   }

@@ -16,6 +16,7 @@ class BTServiceNode extends BTLabelNode {
       canMove: true,
       canDrop: true,
       icon: 'service',
+      subtitles: ['服务'],
       acceptTypes: ['service']
     }, config))
   }
