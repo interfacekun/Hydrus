@@ -168,7 +168,7 @@
           model.form.subtitles = [].concat(node.label().getSubtitles())
           model.form.title = node.label().getTitle()
           model.form.script = node.label().getScript()
-          console.log("handleEditCommand2", JSON.stringify(node.label().getScriptParameters()), node, node.nodeType());
+          console.log("handleEditCommand2", JSON.stringify(node.label().getScriptParameters()), node, node.nodeType(), model.form.title);
           model.form.parameters = [].concat(node.label().getScriptParameters())
         } else {
           this.$Message.error({
@@ -262,6 +262,7 @@
       },
       handleElementModel(){
         let model = this.dialogs.elementModel
+        console.log("handleElementModel", model.action);
          if (model.action === 'add'){
           // 检测合法性
           this.$refs['editElement'].validate((valid) => {
@@ -284,12 +285,13 @@
                 this.scene.stage.refresh()
                 this.scene.stage.snapshot()
                 model.visible = false
+                this.saveCache();
               }
           })
          } else if (model.action === 'edit') {
           
            this.$refs['editElement'].validate((valid) => {
-             if (valid (model.form.type === 'decorator' && model.form.parameters && model.form.parameters.length > 0)) {
+             if (valid || (model.form.type === 'decorator' && model.form.parameters && model.form.parameters.length >= 0)) {
               // 修改节点属性
               model.host.setTitle(model.form.title)
               model.host.setSubtitles(model.form.subtitles)
@@ -301,6 +303,7 @@
               this.scene.stage.refresh()
               this.scene.stage.snapshot()
               model.visible = false
+              this.saveCache();
              }
            })
          } else { // 其余动作
@@ -309,6 +312,7 @@
       },
       handleEntityModel(){
         let model = this.dialogs.entityModel
+        console.log("handleEntityModel", model.action);
          if (model.action === 'add'){
           // 检测合法性
           this.$refs['editEntity'].validate((valid) => {
@@ -332,20 +336,27 @@
                 this.scene.stage.refresh()
                 this.scene.stage.snapshot()
                 model.visible = false
+                this.saveCache();
               }
           })
          } else if (model.action === 'edit') {
           
            this.$refs['editEntity'].validate((valid) => {
-             if (valid || (model.form.parameters && model.form.parameters.length > 0)) {
-              // 修改节点属性
-              model.host.label().setTitle(model.form.title)
-              model.host.label().setScript(model.form.script, model.form.parameters)
-              model.host.label().setSubtitles(model.form.subtitles)
-              model.host.adjust()
-              this.scene.stage.refresh()
-              this.scene.stage.snapshot()
-              model.visible = false
+             console.log("handleEntityModel2", model.host, model.host.label(), model.form.title, valid);
+             if (valid || (model.form.parameters && model.form.parameters.length >= 0)) {
+                // 修改节点属性
+                model.host.label().setTitle(model.form.title)
+                model.host.label().setScript(model.form.script, model.form.parameters)
+                model.host.label().setSubtitles(model.form.subtitles)
+                model.host.config.label.title = model.form.title;
+                model.host.config.label.script = model.form.script;
+                model.host.config.label.parameters = model.form.parameters;
+                model.host.config.label.subtitles = model.form.subtitles;
+                model.host.adjust()
+                this.scene.stage.refresh()
+                this.scene.stage.snapshot()
+                model.visible = false
+                this.saveCache();
              }
            })
 
@@ -679,6 +690,7 @@
         height: this.size.height,
         events: {
           edit: (node) => {
+            console.log("mounted edit", node.config.uid);
             this.handleEditCommand(node)
           }
         }

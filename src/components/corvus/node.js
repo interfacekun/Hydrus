@@ -19,15 +19,15 @@ class BTNode {
       canMove: false
     }, config)
 
-    if (!this.config.uid) {
-      // this.config.uid = uniqid() // 自动生成,
-      this.config.uid = window["autoUid"]++; // 自动生成,
-    } else {
-      if (this.config.uid >= window["autoUid"]) {
-        window["autoUid"] = this.config.uid;
-      }
-    }
- 
+    // if (!this.config.uid) {
+    //   // this.config.uid = uniqid() // 自动生成,
+    //   this.config.uid = window["autoUid"]++; // 自动生成,
+    // } else {
+    //   if (this.config.uid >= window["autoUid"]) {
+    //     window["autoUid"] = this.config.uid;
+    //   }
+    // }
+    this.config.uid = uniqid() // 自动生成,
     this.config.names[this.config.type] = true
     this.isSelected = false
     this.root = new Konva.Group({
