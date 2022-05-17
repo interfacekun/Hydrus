@@ -18,17 +18,17 @@
 
                 <FormItem label="Parameters">
                     <Tag
-                      :key="tag"
-                      color="warning"
-                      v-for="(tag, i) in model.form.parameters"
-                      :closable=" i > 0 "
-                      @close="handleParametersClose(tag)">
+                        :key="tag"
+                        color="warning"
+                        v-for="(tag, i) in model.form.parameters"
+                        closable
+                        @on-close="handleParametersClose(tag)">
                       {{tag}}
                     </Tag>
                     <Input
                       class="input-new-tag"
-                      v-if="inputVisible"
-                      v-model="inputValue"
+                      v-if="inputArgsVisible"
+                      v-model="inputArgsValue"
                       ref="saveParametersInput"
                       size="small"
                       @keyup.enter.native="handleParametersInputConfirm"
@@ -98,6 +98,8 @@
         },
         inputVisible: false,
         inputValue: '',
+        inputArgsVisible: false,
+        inputArgsValue: '',
         rules:{
             script: [{ type: 'string', required: true, message: '格式不合法，只能包含大小写字母、数字和下划线', pattern: /^[a-zA-Z_][a-zA-Z0-9_]+$/, trigger: 'blur' }],
             title: [{ type: 'string', required: true, message: '不能为空', trigger: 'blur' }],
@@ -114,6 +116,7 @@
         }
       },
       handleTagClose(tag) {
+        console.log("EditEntity.vue handleTagClose", tag);
         this.model.form.subtitles.splice(this.model.form.subtitles.indexOf(tag), 1);
       },
 
@@ -134,23 +137,24 @@
       },
 
       handleParametersClose(tag) {
+        console.log("EditEntity.vue handleParametersClose", tag);
         this.model.form.parameters.splice(this.model.form.parameters.indexOf(tag), 1);
       },
 
       showParametersInput() {
-        this.inputVisible = true
+        this.inputArgsVisible = true
         this.$nextTick(_ => {
           this.$refs['saveParametersInput'].$refs.input.focus()
         });
       },
 
       handleParametersInputConfirm() {
-        let inputValue = this.inputValue
+        let inputValue = this.inputArgsValue
         if (inputValue) {
           this.model.form.parameters.push(inputValue)
         }
-        this.inputVisible = false
-        this.inputValue = ''
+        this.inputArgsVisible = false
+        this.inputArgsValue = ''
       },
 
       validate(cb) {

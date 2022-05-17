@@ -160,6 +160,7 @@
           model.form.subtitles = [].concat(node.getSubtitles())
           model.form.title = node.getTitle()
           model.form.script = node.getScript()
+          console.log("handleEditCommand1", JSON.stringify(model.form.parameters), JSON.stringify(node.getScriptParameters()), node, node.nodeType());
           model.form.parameters = [].concat(node.getScriptParameters())
           model.form.invert = node.getInvert()
         } else if (node.isType('entity')) {
@@ -167,6 +168,7 @@
           model.form.subtitles = [].concat(node.label().getSubtitles())
           model.form.title = node.label().getTitle()
           model.form.script = node.label().getScript()
+          console.log("handleEditCommand2", JSON.stringify(node.label().getScriptParameters()), node, node.nodeType());
           model.form.parameters = [].concat(node.label().getScriptParameters())
         } else {
           this.$Message.error({
@@ -269,7 +271,8 @@
                   title: model.form.title,
                   subtitles: model.form.subtitles,
                   script: model.form.script,
-                  invert: model.form.invert
+                  invert: model.form.invert,
+                  parameters: model.form.parameters
                 }
                 
                 if (model.form.type === 'decorator') {
@@ -286,11 +289,11 @@
          } else if (model.action === 'edit') {
           
            this.$refs['editElement'].validate((valid) => {
-             if (valid) {
+             if (valid (model.form.type === 'decorator' && model.form.parameters && model.form.parameters.length > 0)) {
               // 修改节点属性
               model.host.setTitle(model.form.title)
               model.host.setSubtitles(model.form.subtitles)
-              model.host.setScript(model.form.script)
+              model.host.setScript(model.form.script, model.form.parameters)
               if (model.form.type === 'decorator') {
                 model.host.setInvert(model.form.invert)
               }
@@ -334,7 +337,7 @@
          } else if (model.action === 'edit') {
           
            this.$refs['editEntity'].validate((valid) => {
-             if (valid) {
+             if (valid || (model.form.parameters && model.form.parameters.length > 0)) {
               // 修改节点属性
               model.host.label().setTitle(model.form.title)
               model.host.label().setScript(model.form.script, model.form.parameters)
